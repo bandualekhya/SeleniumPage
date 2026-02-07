@@ -1,0 +1,1798 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Selenium Topics — Grouped Levels</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --sidebar:#0f2430;
+      --accent:#14b0ac;
+      --muted:#7b8a90;
+      --card:#ffffff;
+      --bg:#eef6f7;
+      --soft-yellow:#fff8e1;
+      --soft-yellow-border:#ffe8a8;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display:flex;
+      height:100vh;
+      background: #e9f3f5;
+  color: #0b0b0b;
+      overflow:hidden;
+      font-size:13px;
+    }
+
+    .sidebar{
+      width:320px;
+      background:var(--sidebar);
+      color:#e9f7f8;
+      padding:24px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      overflow:auto;
+      box-shadow:4px 0 26px rgba(0,0,0,0.12);
+      flex-shrink:0;
+    }
+    .sidebar h2{
+      margin:0;
+      font-family:Merriweather,serif;
+      color:#3ac4ff;
+      font-size:20px;
+      text-align:center;
+    }
+    #searchBar{
+      width:100%;
+      padding:10px 12px;
+      border-radius:8px;
+      border:none;
+      background:#112b31;
+      color:#cfe7e8;
+      outline:none;
+      font-size:13px;
+    }
+
+    .section{
+      margin-top:6px;
+    }
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #121826;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: #e6f0f2;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.12s;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+    .section-title:hover {
+      background: #263a54;
+      transform: translateY(-1px);
+    }
+    .section-title.active {
+      background: #3a6073;
+      color: #fff;
+    }
+
+    .section-content {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      padding-left: 6px;
+      margin-top: 8px;
+      padding-bottom: 6px;
+    }
+
+    .topicItem, .subtopicItem {
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #dbe7ea;
+      font-weight: 500;
+      font-size: 11px;
+      transition: background 0.12s, transform 0.12s;
+      background: transparent;
+      display: block;
+    }
+
+    .topicItem:hover, .subtopicItem:hover {
+      background: #1b1b1b;
+      color: #fff;
+      transform: translateX(6px);
+    }
+
+    .topicItem.active, .subtopicItem.active {
+      background: #1b1b1b;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .caret {
+      font-size: 13px;
+      color: #82e6e6;
+      transition: transform 0.18s ease, color 0.12s;
+      user-select: none;
+    }
+    .caret.open {
+      transform: rotate(90deg);
+      color: #ffffff;
+    }
+
+    #content-foundation .topicItem,
+    #core-other .topicItem,
+    #content-framework .topicItem {
+      margin-left: 8px;
+    }
+
+    .content{
+      flex:1;
+      padding:28px 44px;
+      overflow:auto;
+      position:relative;
+    }
+    .page-title{
+      font-family:Merriweather,serif;
+      font-size:28px;
+      margin:0 0 18px;
+      color:#0e3a3a;
+      text-align:left;
+    }
+
+    .info-banner{
+      background:linear-gradient(180deg,var(--soft-yellow), #fff);
+      border-left:5px solid var(--soft-yellow-border);
+      border-radius:12px;
+      box-shadow:0 6px 28px rgba(15,23,42,0.06);
+      display:flex;
+      align-items:flex-start;
+      gap:18px;
+      padding:18px 22px;
+      animation:fadeIn .35s ease;
+      max-width:980px;
+      margin-bottom:18px;
+    }
+    @keyframes fadeIn{ from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none} }
+    .info-text h2{ margin:0; font-family:Merriweather,serif; font-size:18px; color:#db2777; }
+    .info-text p{ margin:8px 0 0; color:#334155; font-size:14px; line-height:1.6; }
+
+    .tab-buttons{ display:flex; gap:12px; margin:18px 0; }
+    .tab-btn{
+      background:rgba(250,250,250,0.95);
+      border:none;
+      padding:9px 16px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:500;
+      color:#0d5858;
+      font-size:14px;
+      box-shadow:0 8px 22px rgba(10,160,160,0.02);
+    }
+    .tab-btn.active{ background:var(--accent); color:#fff; box-shadow:0 14px 26px rgba(10,160,160,0.12) }
+
+    .tab-content{
+      background:var(--card);
+      border-radius:11px;
+      padding:18px;
+      box-shadow:0 10px 36px rgba(15,23,42,0.05);
+      max-width:980px;
+    }
+    .tab-content h3{ margin:0 0 6px; font-family:Merriweather,serif; color:#0f3a3a; font-size:20px; }
+    .subheading{ color:var(--muted); margin-bottom:10px; font-size:12px }
+    ul{ margin:11px 0 0 20px; color:#21343a; line-height:1.6; font-size:12px; }
+
+    ::-webkit-scrollbar{ width:10px; height:10px }
+    ::-webkit-scrollbar-thumb{ background:#cbd6d9; border-radius:10px }
+
+    @media (max-width:900px){
+      .sidebar{ width:260px }
+      .page-title{ font-size:22px }
+      .content{ padding:18px }
+    }
+    
+    .subgroup-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #20383c;
+      color: #cde5e6;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 6px 8px;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .subgroup-content {
+      display: none;
+      flex-direction: column;
+      margin-left: 18px;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+	
+.footer-copy {
+  position: fixed;
+  right: 25px;
+  bottom: 10px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #14b0ac; /* soft gray-blue */
+  font-family: 'Inter', sans-serif;
+  opacity: 0.8;
+  transition: opacity 0.3s ease, color 0.3s ease;
+  z-index: 9999;
+}
+
+.footer-copy:hover {
+  opacity: 1;
+  color: #14b0ac; /* matches your accent color */
+}
+
+
+ </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Selenium Topics</h2>
+    <input id="searchBar" placeholder=" Search topics..." />
+
+    <div class="section">
+      <div class="section-title" data-section="foundation">
+        <div>Foundation Level</div>
+        <div class="caret" id="caret-foundation">▶</div>
+      </div>
+      <div class="section-content" id="content-foundation"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title" data-section="core">
+        <div>Core Automation Level</div>
+        <div class="caret" id="caret-core">▶</div>
+      </div>
+      <div class="section-content" id="content-core">
+        <div class="subgroup">
+          <div class="subgroup-title" data-subgroup="waits">
+            <span>Wait Strategies</span>
+            <span class="caret" id="caret-waits">▶</span>
+          </div>
+          <div class="subgroup-content" id="content-waits"></div>
+        </div>
+        <div id="core-other"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title" data-section="framework">
+        <div>Framework / Enterprise Level</div>
+        <div class="caret" id="caret-framework">▶</div>
+      </div>
+      <div class="section-content" id="content-framework"></div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="headerArea" style="text-align:center; margin-bottom:26px;">
+      <div id="mainTitle" class="page-title"
+           style="font-size:20px; font-weight:600; font-family:'Merriweather', serif;
+                  background: linear-gradient(90deg, #1e3a8a, #0ea5e9);
+                  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+                  margin-bottom:14px;">
+        Learn Selenium Concepts Through Structured Q&A — From Fundamentals to Expert Level
+      </div>
+    </div>
+
+    <div id="defaultBanner" class="info-banner">
+      <div class="info-text" style="flex:1;">
+        <h2 style="font-family:'Merriweather',serif; font-size:15px; color:#db2777; margin:0 0 14px;">
+           Welcome to Selenium Q&A Portal
+        </h2>
+        <ul style="margin:0 0 25px; color:#0e2e30; font-size:12px; line-height:1.8;">
+          <li>This platform is designed to help you prepare for <strong>Selenium interviews effectively</strong>.</li>
+          <li>Explore a wide range of topics — from setup and architecture to advanced automation techniques.</li>
+          <li>Each topic includes <strong>exercise-based learning,</strong> <strong>categorized Q&A, </strong>and <strong>real-world examples.</strong></li>
+        </ul>
+
+        <h3 style="color:#7c3aed; font-size:13px; margin-bottom:5px; margin-top:13px; font-weight:600;">
+           How to Use This
+        </h3>
+
+        <ul style="margin:0 0 20px 24px; padding:12px; color:#475569; line-height:1.8; font-size:12px;">
+          <li style="list-style-type:disc;">Select a topic from the left panel.</li>
+          <li style="list-style-type:disc;">Switch between <strong>Exercise</strong>, <strong>Basic</strong>, <strong>Medium</strong>, and <strong>Advanced</strong> tabs.</li>
+          <li style="list-style-type:disc;">Practice with Q&A and automation exercises for interview success.</li>
+        </ul>
+
+        <p style="margin-top: 14px; font-size: 13.5px; color: #0f3a3a; font-weight: 500; line-height: 1.6;">
+           <em><strong>The goal is to provide a structured, progressive learning experience</strong></em> — so you can confidently face any Selenium interview.
+        </p>
+      </div>
+    </div>
+
+    <p id="subtitle" style="margin-top:18px; text-align:center; font-style:italic; font-size:12px; color:#64748b;">
+      A step-by-step learning and interview preparation guide covering every Selenium topic from basics to advanced.
+    </p>
+
+    <div id="tabButtons" class="tab-buttons" style="display:none">
+      <button class="tab-btn active" data-tab="exercise" onclick="showTab('exercise', this)">Exercise</button>
+      <button class="tab-btn" data-tab="basic" onclick="showTab('basic', this)">Basic</button>
+      <button class="tab-btn" data-tab="medium" onclick="showTab('medium', this)">Medium</button>
+      <button class="tab-btn" data-tab="advanced" onclick="showTab('advanced', this)">Advanced</button>
+    </div>
+
+    <div id="tabContent" class="tab-content" style="display:none;"></div>
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+const topics = {
+      "Selenium Overview & Architecture":{
+        exercise:[
+          "Read official Selenium documentation and summarize the architecture.",
+          "Draw Selenium architecture diagram.",
+          "Identify different components: IDE, RC, WebDriver, Grid.",
+          "Explain how WebDriver communicates with browsers.",
+          "Setup a simple Selenium Maven project to test WebDriver connection."
+        ],
+        basic:[
+          "What is Selenium?",
+          "Difference between Selenium IDE, RC, WebDriver, and Grid.",
+          "What is the role of WebDriver in Selenium?",
+          "What is Selenium Grid?",
+          "What browsers does Selenium support?",
+          "Difference between Selenium 3 and Selenium 4.",
+          "What is the architecture of Selenium WebDriver?",
+          "How does Selenium communicate with browsers?",
+          "What are the advantages of Selenium over other tools?",
+          "What is a RemoteWebDriver?"
+        ],
+        medium:[
+          "Explain the internal working of WebDriver.",
+          "How does Selenium Grid help in parallel execution?",
+          "Compare Selenium with other automation tools like QTP/UFT.",
+          "Explain the role of JSON Wire Protocol.",
+          "Explain how Selenium handles browser drivers.",
+          "Describe different Selenium components and their use-cases.",
+          "Explain the difference between local and remote WebDriver execution.",
+          "Discuss limitations of Selenium WebDriver.",
+          "Explain how Selenium 4 improved relative locators.",
+          "Explain the architecture differences between IDE and WebDriver."
+        ],
+        advanced:[
+          "Design a real-world scenario: choosing Selenium components for a cross-browser testing project.",
+          "How would you implement Selenium Grid for multiple environments?",
+          "Explain the sequence of commands from Selenium script to browser execution.",
+          "Describe handling of dynamic web elements at architectural level.",
+          "Explain how Selenium interacts with headless browsers.",
+          "Design a CI/CD pipeline integrating Selenium Grid.",
+          "Troubleshoot browser driver version conflicts.",
+          "Explain real-time challenges with Selenium architecture in large projects.",
+          "How to scale Selenium automation for multiple teams.",
+          "Discuss architectural decisions for Selenium in mobile vs desktop automation."
+        ]
+      },
+
+      "Setup: Maven, Eclipse/IntelliJ, ChromeDriver, GeckoDriver":{
+        exercise:[
+          "Install Eclipse or IntelliJ IDEA.",
+          "Create a Maven project.",
+          "Add Selenium WebDriver dependency in pom.xml.",
+          "Download and configure ChromeDriver and GeckoDriver.",
+          "Write a simple program to launch Chrome and Firefox.",
+          "Verify browser version compatibility.",
+          "Set WebDriver executable paths programmatically.",
+          "Implement browser setup using a reusable method.",
+          "Manage driver binaries using WebDriverManager."
+        ],
+        basic:[
+          "How to set up Selenium WebDriver in Eclipse?",
+          "What is Maven and why is it used?",
+          "How to add dependencies in Maven?",
+          "Difference between ChromeDriver and GeckoDriver.",
+          "How to launch Chrome and Firefox browsers.",
+          "How to configure driver path in WebDriver.",
+          "What is WebDriverManager?",
+          "Difference between local and remote driver.",
+          "How to verify browser version compatibility.",
+          "Why do we need different drivers for different browsers?"
+        ],
+        medium:[
+          "Create a Maven project with multiple dependencies (Selenium, TestNG, WebDriverManager).",
+          "Launch multiple browsers from the same project.",
+          "Handle driver path dynamically using System.setProperty().",
+          "Verify if the driver is compatible with browser version.",
+          "Integrate WebDriverManager to manage binaries automatically.",
+          "Switch between Chrome and Firefox programmatically.",
+          "Create a reusable setup method for browser initialization.",
+          "Launch browser in headless mode.",
+          "Implement exception handling for driver initialization.",
+          "Run a sample Selenium test using Maven lifecycle commands."
+        ],
+        advanced:[
+          "Design a reusable driver setup utility for multiple projects.",
+          "Handle multiple versions of Chrome/Firefox for cross-browser testing.",
+          "Implement browser setup in CI/CD pipeline using Maven.",
+          "Optimize driver initialization for parallel execution.",
+          "Handle failures in driver download using WebDriverManager.",
+          "Configure browser capabilities for testing (like incognito, notifications disabled).",
+          "Integrate remote WebDriver for Selenium Grid.",
+          "Troubleshoot browser-driver compatibility issues.",
+          "Implement environment-specific browser setup (Dev/QA/Prod).",
+          "Real-world project: automate driver setup across multiple team machines."
+        ]
+      },
+
+      "WebDriver Interface & Browser Launch":{
+        exercise:[
+          "Instantiate WebDriver for Chrome, Firefox, and Edge.",
+          "Open a website and print page title.",
+          "Navigate to multiple URLs sequentially.",
+          "Maximize and minimize browser window.",
+          "Close current browser and quit entire session.",
+          "Retrieve current URL and page source.",
+          "Use WebDriver methods like getTitle(), getCurrentUrl(), getPageSource().",
+          "Implement a reusable browser launch method.",
+          "Implement error handling for browser launch failures.",
+          "Launch multiple browsers simultaneously."
+        ],
+        basic:[
+          "What is WebDriver interface?",
+          "How to instantiate WebDriver?",
+          "Difference between driver.close() and driver.quit().",
+          "How to get page title?",
+          "How to get current URL?",
+          "How to get page source?",
+          "Difference between ChromeDriver, FirefoxDriver, EdgeDriver.",
+          "How to maximize and minimize browser.",
+          "How to navigate to URL.",
+          "Difference between interface and class in WebDriver context."
+        ],
+        medium:[
+          "Launch Chrome and Firefox browsers sequentially and print titles.",
+          "Open multiple websites in the same browser.",
+          "Implement reusable method for browser launch with browser name parameter.",
+          "Retrieve page source and verify specific text.",
+          "Handle exceptions when browser fails to launch.",
+          "Close current tab and switch to another.",
+          "Verify page title after navigation.",
+          "Implement browser navigation using back() and forward().",
+          "Launch headless browsers using WebDriver.",
+          "Validate correct URL is loaded after navigation."
+        ],
+        advanced:[
+          "Real-world scenario: reusable browser launch utility for multiple projects.",
+          "Implement cross-browser tests using a single method.",
+          "Handle failures in browser launch and retry logic.",
+          "Dynamically choose browser based on environment variable.",
+          "Launch multiple browser instances for parallel execution.",
+          "Integrate browser launch with TestNG @BeforeMethod setup.",
+          "Handle driver initialization failures in CI/CD.",
+          "Automate navigation in multi-page application with verification.",
+          "Use Java Reflection to launch browsers dynamically.",
+          "Optimize browser launch for cloud-based testing (like Selenium Grid or Sauce Labs)."
+        ]
+      },
+
+      "Locators":{
+        exercise:[
+          "Open a sample web page and locate elements using id.",
+          "Locate elements using name.",
+          "Locate elements using className.",
+          "Locate elements using tagName.",
+          "Locate links using linkText and partialLinkText.",
+          "Locate elements using CSS Selector.",
+          "Locate elements using XPath.",
+          "Find multiple elements using findElements().",
+          "Verify correct element is located by printing getText().",
+          "Use dynamic XPath for elements with changing attributes."
+        ],
+        basic:[
+          "What are locators in Selenium?",
+          "Difference between id and name locators.",
+          "How to use className locator.",
+          "Difference between linkText and partialLinkText.",
+          "What is CSS Selector?",
+          "What is XPath?",
+          "Difference between absolute and relative XPath.",
+          "Difference between findElement() and findElements().",
+          "When to use CSS Selector over XPath.",
+          "What are advantages of relative XPath."
+        ],
+        medium:[
+          "Write a script to locate elements using all locators on a sample page.",
+          "Use findElements() to get a list of multiple buttons.",
+          "Locate elements with dynamic attributes using XPath functions (contains, starts-with).",
+          "Create CSS Selector for nested elements.",
+          "Verify link text using linkText and partialLinkText.",
+          "Locate elements inside a table using XPath.",
+          "Use multiple locators in a reusable method.",
+          "Identify element uniqueness using isDisplayed().",
+          "Handle dynamically generated IDs in locators.",
+          "Use parent-child XPath relationships to locate elements."
+        ],
+        advanced:[
+          "Real-world scenario: automate a form with dynamically changing field IDs using XPath.",
+          "Create reusable locator library for multiple projects.",
+          "Use CSS and XPath together to locate complex nested elements.",
+          "Automate navigation menus with dynamic links.",
+          "Implement locator strategies to avoid flaky tests.",
+          "Optimize XPath for performance in large DOMs.",
+          "Handle elements inside iframe with XPath and CSS.",
+          "Use relative XPath to select rows in dynamic tables.",
+          "Design locator strategy for multi-page form automation.",
+          "Real-world scenario: locate elements in AJAX-heavy pages reliably."
+        ]
+      },
+
+      "Basic WebElement Interactions":{
+        exercise:[
+          "Open a sample login page and enter text in username and password fields using sendKeys().",
+          "Click on login button using click().",
+          "Clear a text field using clear().",
+          "Retrieve text from labels, headings, and error messages using getText().",
+          "Retrieve attribute values like value, href, title using getAttribute().",
+          "Verify button is enabled before clicking using isEnabled().",
+          "Check if element is displayed using isDisplayed().",
+          "Check if checkbox/radio button is selected using isSelected().",
+          "Use multiple sendKeys() for form filling.",
+          "Chain actions like clear → sendKeys → click."
+        ],
+        basic:[
+          "What is a WebElement in Selenium?",
+          "How to interact with text boxes?",
+          "How to click a button?",
+          "Difference between getText() and getAttribute().",
+          "How to verify if an element is displayed?",
+          "How to check if element is enabled?",
+          "How to check if a checkbox or radio button is selected?",
+          "Difference between click() and submit().",
+          "How to clear text from a field?",
+          "Why is sendKeys() important for automation?"
+        ],
+        medium:[
+          "Automate login scenario: clear field → enter username/password → click login.",
+          "Retrieve text of error messages after invalid input.",
+          "Verify links’ href attributes.",
+          "Handle multiple checkboxes and select/unselect.",
+          "Verify button states before and after actions.",
+          "Enter data in a multi-field form using sendKeys().",
+          "Chain multiple interactions on a single element.",
+          "Retrieve placeholder text using getAttribute('placeholder').",
+          "Verify dynamic changes in text after actions.",
+          "Automate form submission and validate success message."
+        ],
+        advanced:[
+          "Real-world scenario: automate registration form with validations and dynamic messages.",
+          "Create reusable methods for common WebElement interactions.",
+          "Handle elements that are visible only after certain actions.",
+          "Automate selection and deselection of multiple checkboxes dynamically.",
+          "Verify dynamic UI changes using getText() and getAttribute().",
+          "Implement robust error handling for stale or detached elements.",
+          "Automate complex form flows with conditional interactions.",
+          "Optimize scripts to avoid redundant sendKeys() or click() calls.",
+          "Validate tooltips and dynamic attributes after hover or click.",
+          "Simulate real-world test: login → form submission → validation → error handling → report results."
+        ]
+      },
+
+      "Browser Navigation":{
+        exercise:[
+          "Open a website using driver.navigate().to().",
+          "Navigate to multiple URLs sequentially.",
+          "Go back to the previous page using navigate().back().",
+          "Move forward using navigate().forward().",
+          "Refresh the current page using navigate().refresh().",
+          "Verify page title after each navigation.",
+          "Implement navigation in a reusable method.",
+          "Handle dynamic pages while navigating.",
+          "Combine navigation methods with waits for elements to load.",
+          "Automate a multi-page workflow using navigation commands."
+        ],
+        basic:[
+          "Difference between driver.get() and driver.navigate().to().",
+          "How to navigate back in browser?",
+          "How to move forward in browser?",
+          "How to refresh a page?",
+          "Difference between refresh() and get() for reloading a page.",
+          "Can you navigate to multiple URLs in the same browser session?",
+          "How to verify page title after navigation?",
+          "How does navigate().to() differ from get() internally?",
+          "What happens if you use back() on the first page?",
+          "Why use navigation commands over get() in workflow automation?"
+        ],
+        medium:[
+          "Navigate to 3 different websites sequentially and verify titles.",
+          "Implement back and forward navigation in a login → form → dashboard flow.",
+          "Refresh page and validate dynamic elements reload.",
+          "Combine navigation with isDisplayed() checks.",
+          "Navigate and capture page URLs after each action.",
+          "Handle exceptions when navigating to unavailable URLs.",
+          "Automate multi-step workflow using back/forward navigation.",
+          "Validate that dynamic elements persist after refresh.",
+          "Use navigation in combination with waits for page load.",
+          "Implement reusable navigation utility for multiple pages."
+        ],
+        advanced:[
+          "Real-world scenario: automate e-commerce workflow – open homepage → search product → navigate to product page → back to search results → refresh results.",
+          "Handle dynamic page reloads during navigation.",
+          "Integrate navigation with TestNG parameterized tests for multiple URLs.",
+          "Optimize navigation flow to reduce test execution time.",
+          "Implement retry logic on failed navigation due to network delays.",
+          "Automate multi-page forms with forward/back navigation.",
+          "Capture screenshots on navigation failure.",
+          "Combine navigation with data-driven testing.",
+          "Simulate user browsing behavior in a real project scenario.",
+          "Implement robust error handling and logging for navigation commands in a framework."
+        ]
+      },
+
+      "Handling Checkboxes, Radio Buttons, Drop-downs":{
+        exercise:[
+          "Locate a checkbox and select it using click().",
+          "Deselect a checkbox if already selected.",
+          "Verify checkbox state using isSelected().",
+          "Locate a radio button and select it.",
+          "Verify selected radio button.",
+          "Handle single-select drop-down using Select class: select by index, value, visible text.",
+          "Retrieve all options from drop-down and print them.",
+          "Handle multi-select drop-down: select multiple options and deselect.",
+          "Verify selected options in multi-select drop-down.",
+		  "Combine drop-down selection with form submission.",
+	   	  "Handle dynamic drop-downs loaded by JavaScript.",
+		  "Validate error messages for unselected required checkboxes.",
+		  "Use getOptions() and getAllSelectedOptions().",
+		  "Automate a form submission with multiple checkboxes and drop-downs."
+        ],
+        basic:[
+          "How to select a checkbox?",
+          "How to deselect a checkbox?",
+          "How to verify if a checkbox is selected?",
+          "How to select a radio button?",
+          "Difference between checkbox and radio button.",
+          "What is the Select class?",
+          "How to select drop-down options by index, value, or visible text?",
+          "How to handle multi-select drop-down?",
+          "How to retrieve all options from a drop-down?",
+          "How to verify selected options in a drop-down?"
+        ],
+        medium:[
+          "Automate a form with multiple checkboxes and radio buttons.",
+          "Select multiple options from a multi-select drop-down.",
+          "Deselect specific options from multi-select drop-down.",
+          "Validate that only one radio button is selected at a time.",
+          "Retrieve and print all drop-down options.",
+          "Verify default selected option in drop-down.",
+          "Handle dynamic drop-downs loaded via AJAX.",
+          "Check required checkbox before form submission.",
+          "Create reusable methods for interacting with checkboxes, radio buttons, and drop-downs.",
+          "Combine checkbox, radio, and drop-down selections in a single script."
+        ],
+        advanced:[
+          "Real-world scenario: automate registration form with multiple checkboxes, radio buttons, and country/state drop-downs.",
+          "Handle dynamic dependent drop-downs (e.g., country → state → city).",
+          "Verify multiple selected options in a multi-select drop-down against test data.",
+          "Implement reusable utility for selecting options across projects.",
+          "Automate validation of optional vs required checkboxes and radio buttons.",
+          "Integrate drop-down selection with TestNG data provider for parameterized testing.",
+          "Handle error scenarios when invalid option is selected.",
+          "Automate form submission workflow for multiple user profiles.",
+          "Optimize drop-down and checkbox selection to reduce execution time.",
+          "Combine all element interactions in an end-to-end real-world test case."
+        ]
+      },
+
+      /* Wait Strategies represented as parent 'Wait Strategies' with subtopics */
+      "Wait Strategies":{ // parent placeholder (left shows as expandable)
+        __subtopics__: ["Implicit Wait","Explicit Wait","Fluent Wait","ExpectedConditions"]
+      },
+
+      "Implicit Wait":{
+        exercise:[
+          "Open a webpage with delayed elements.",
+"Set driver.manage().timeouts().implicitlyWait() for 10 seconds.",
+"Locate and interact with elements that appear after delay.",
+"Observe behavior when element is not present.",
+"Combine implicit wait with findElement() and findElements().",
+"Implement implicit wait in a reusable browser setup method.",
+"Test impact of implicit wait on page load and script execution.",
+"Verify implicit wait works for all elements globally.",
+"Compare execution time with and without implicit wait.",
+"Handle exceptions like NoSuchElementException."
+        ],
+        basic:[
+          "What is implicit wait?",
+"How to implement implicit wait in Selenium?",
+"Difference between implicit and explicit wait.",
+"When should you use implicit wait?",
+"Does implicit wait apply to all elements?",
+"What is default timeout for implicit wait?",
+"What happens if element is not found within implicit wait?",
+"How to remove implicit wait?",
+"Difference between findElement and findElements in context of implicit wait.",
+"Can implicit wait handle dynamic AJAX elements?"
+        ],
+        medium:[
+          "Implement implicit wait for multiple delayed elements on a form.",
+"Verify dropdown options appear after delay using implicit wait.",
+"Measure time difference with and without implicit wait.",
+"Use implicit wait with isDisplayed() and isEnabled().",
+"Handle StaleElementReferenceException with implicit wait.",
+"Test login page elements that load dynamically.",
+"Verify all text boxes appear using implicit wait.",
+"Integrate implicit wait in reusable browser setup method.",
+"Observe impact of high vs low implicit wait timeout.",
+"Handle exceptions gracefully when element never appears."
+        ],
+        advanced:[
+         "Real-world scenario: automate page with AJAX-loaded content and validate all fields.",
+"Combine implicit wait with explicit wait in same script.",
+"Optimize wait strategies to reduce execution time.",
+"Troubleshoot flaky tests caused by dynamic elements.",
+"Design reusable wait strategy for entire project.",
+"Handle slow-loading pop-ups using implicit wait.",
+"Integrate implicit wait into parallel execution.",
+"Compare test results for implicit wait on different browsers.",
+"Automate a workflow where elements appear after server response.",
+"Implement best practices for implicit wait in large-scale projects."
+        ]
+      },
+
+      "Explicit Wait":{
+        exercise:[
+          "Open webpage with delayed button.",
+"Implement WebDriverWait with ExpectedConditions.visibilityOfElementLocated().",
+"Wait for element to be clickable and then click.",
+"Wait for presence of element using presenceOfElementLocated().",
+"Wait for element to disappear using invisibilityOfElementLocated().",
+"Reuse explicit wait in utility method.",
+"Combine explicit wait with multiple locators.",
+"Verify dynamic elements appear using explicit wait.",
+"Handle TimeoutException gracefully.",
+"Compare explicit wait with implicit wait behavior."
+        ],
+        basic:[
+          "What is explicit wait?",
+"How to implement explicit wait?",
+"Difference between implicit and explicit wait.",
+"What are ExpectedConditions?",
+"Which conditions can be used with explicit wait?",
+"Can explicit wait handle AJAX elements?",
+"What happens if element does not appear in explicit wait time?",
+"How to handle TimeoutException?",
+"Difference between visibilityOfElementLocated and presenceOfElementLocated.",
+"Can explicit wait be applied globally?"
+        ],
+        medium:[
+          "Wait for a button to become clickable and click it.",
+"Wait for a text field to be visible before entering data.",
+"Wait for element to disappear before proceeding.",
+"Combine explicit wait with frame switching.",
+"Implement explicit wait for multiple dynamic elements.",
+"Handle AJAX-loaded drop-down options with explicit wait.",
+"Use explicit wait with ExpectedConditions.alertIsPresent().",
+"Measure execution time with explicit wait.",
+"Integrate explicit wait into login workflow.",
+"Handle exceptions when explicit wait fails."
+        ],
+        advanced:[
+          "Real-world scenario: automate checkout page with dynamic price updates.",
+"Combine explicit wait with Actions class for hover+click.",
+"Create reusable explicit wait utility for multiple projects.",
+"Optimize explicit wait to prevent long delays in CI/CD.",
+"Handle multiple dynamic pop-ups using explicit wait.",
+"Integrate explicit wait with TestNG tests.",
+"Automate multi-step form with dynamic element load.",
+"Troubleshoot flaky tests caused by slow element rendering.",
+"Implement hybrid wait strategy using explicit + implicit waits.",
+"Real-world scenario: validate dynamic table content appearing via AJAX using explicit wait."
+        ]
+      },
+
+      "Fluent Wait":{
+        exercise:[
+          "Open a web page with elements that appear dynamically.",
+"Implement FluentWait with timeout and polling interval.",
+"Handle NoSuchElementException using FluentWait.",
+"Wait for element visibility using a custom condition.",
+"Wait for element text to change before interacting.",
+"Reuse FluentWait in a utility method.",
+"Combine FluentWait with multiple locators.",
+"Use FluentWait to handle AJAX-loaded elements.",
+"Observe behavior when element never appears.",
+"Compare FluentWait with implicit and explicit waits."
+        ],
+        basic:[
+          "What is Fluent Wait?",
+"How is Fluent Wait different from Explicit Wait?",
+"What is polling interval?",
+"How to ignore exceptions in Fluent Wait?",
+"Which exceptions can be ignored?",
+"How to wait for an element using Fluent Wait?",
+"What is the advantage of Fluent Wait over Explicit Wait?",
+"Can Fluent Wait handle dynamic content?",
+"How to use Fluent Wait in reusable methods?",
+"Difference between FluentWait and WebDriverWait."
+        ],
+        medium:[
+          "Implement FluentWait to wait for a delayed button to become clickable.",
+"Wait for element text to change dynamically.",
+"Ignore NoSuchElementException while waiting.",
+"Wait for multiple elements using FluentWait.",
+"Combine FluentWait with frame switching.",
+"Implement custom ExpectedCondition using FluentWait.",
+"Compare execution time with FluentWait vs Explicit Wait.",
+"Automate a login page with delayed fields using FluentWait.",
+"Wait for AJAX-loaded drop-down options using FluentWait.",
+"Handle stale elements using FluentWait."
+        ],
+        advanced:[
+          "Real-world scenario: automate dashboard with dynamic charts and tables.",
+"Create reusable FluentWait utility for project-wide use.",
+"Combine FluentWait with Actions class for hover+click.",
+"Handle multiple dynamic pop-ups appearing after delays.",
+"Implement FluentWait in parallel execution scenarios.",
+"Optimize FluentWait to reduce test execution time.",
+"Integrate FluentWait with TestNG framework.",
+"Handle multi-step dynamic workflows using FluentWait.",
+"Troubleshoot flaky tests caused by delayed AJAX elements.",
+"Implement real-world scenario: automate dynamic pricing updates on e-commerce pages with FluentWait."
+        ]
+      },
+
+      "ExpectedConditions":{
+        exercise:[
+          "Open a web page with delayed elements.",
+"Use WebDriverWait with ExpectedConditions.visibilityOfElementLocated().",
+"Use ExpectedConditions.elementToBeClickable() and click the element.",
+"Use ExpectedConditions.presenceOfElementLocated().",
+"Wait for text to be present using textToBePresentInElement().",
+"Use ExpectedConditions.invisibilityOfElementLocated().",
+"Wait for alert using alertIsPresent().",
+"Combine multiple ExpectedConditions.",
+"Implement ExpectedConditions in a reusable utility.",
+"Compare ExpectedConditions with manual Thread.sleep()."
+        ],
+        basic:[
+          "What are ExpectedConditions?",
+"How to use ExpectedConditions in Selenium?",
+"Difference between presence, visibility, and clickability.",
+"Which ExpectedConditions are commonly used?",
+"How to wait for an alert using ExpectedConditions?",
+"Difference between explicit wait and ExpectedConditions.",
+"How to handle dynamic elements using ExpectedConditions?",
+"Can ExpectedConditions be combined?",
+"How to wait for text in an element?",
+"Difference between visibilityOfElementLocated and presenceOfElementLocated."
+        ],
+        medium:[
+          "Wait for button to become clickable and click.",
+"Wait for text to appear in a dynamic label.",
+"Wait for element to disappear before proceeding.",
+"Wait for alert and accept it.",
+"Combine multiple ExpectedConditions for robust waiting.",
+"Implement ExpectedConditions in reusable methods.",
+"Use ExpectedConditions with multiple locators.",
+"Wait for AJAX-loaded elements using ExpectedConditions.",
+"Compare execution time using ExpectedConditions vs Thread.sleep().",
+"Handle exceptions if ExpectedCondition is not met."
+        ],
+        advanced:[
+          "Real-world scenario: automate multi-step form with delayed fields.",
+"Use ExpectedConditions to handle pop-ups appearing after form submission.",
+"Create project-wide utility for ExpectedConditions.",
+"Combine ExpectedConditions with Actions class for hover+click interactions.",
+"Handle dynamic table updates using ExpectedConditions.",
+"Implement ExpectedConditions in CI/CD for flaky tests.",
+"Optimize wait time using conditional ExpectedConditions.",
+"Handle multiple alerts using ExpectedConditions.",
+"Automate dynamic dashboards using ExpectedConditions.",
+"Integrate ExpectedConditions in end-to-end real-world workflow for stable test execution."
+        ]
+      },
+
+      "Actions Class":{
+        exercise:[
+          "Open a webpage with menu hover functionality.",
+"Perform mouse hover on a menu item using Actions.moveToElement().",
+"Perform drag-and-drop from source to target using Actions.dragAndDrop().",
+"Perform double-click on a button using Actions.doubleClick().",
+"Perform right-click on an element using Actions.contextClick().",
+"Perform click-and-hold and release actions.",
+"Combine multiple actions using build().perform().",
+"Hover and click sub-menu items.",
+"Drag elements within a sortable list.",
+"Automate slider movement using Actions.",
+"Use Actions with dynamic elements.",
+"Implement reusable utility methods for actions.",
+"Handle exceptions like ElementNotInteractableException.",
+"Perform keyboard interactions using sendKeys() in Actions.",
+"Validate action results visually or via attribute changes."
+        ],
+        basic:[
+          "What is Actions class?",
+"How to perform mouse hover?",
+"How to perform drag-and-drop?",
+"How to perform double-click?",
+"How to perform right-click?",
+"Difference between click() and Actions click().",
+"What is build().perform()?",
+"How to handle keyboard actions with Actions?",
+"How to chain multiple actions?",
+"Why use Actions class over WebElement methods?"
+        ],
+        medium:[
+          "Perform hover on menu and click sub-menu.",
+"Drag element from one list to another and verify position.",
+"Double-click to open hidden content.",
+"Right-click and select context menu option.",
+"Click-and-hold on slider and move to specific value.",
+"Hover over dynamic elements appearing on AJAX.",
+"Combine keyboard and mouse actions in a workflow.",
+"Handle exceptions during drag-and-drop.",
+"Automate sortable table reordering using Actions.",
+"Verify attribute changes after performing actions."
+        ],
+        advanced:[
+          "Real-world scenario: automate e-commerce site – hover on categories → select subcategory → drag product to cart.",
+"Handle dynamic menus using Actions.",
+"Integrate Actions class with TestNG data-driven tests.",
+"Automate sliders for price or quantity selection.",
+"Handle complex drag-and-drop across frames/windows.",
+"Create reusable utility methods for multiple action types.",
+"Combine Actions class with Explicit Wait for stability.",
+"Automate right-click context menu operations in web applications.",
+"Simulate complex user gestures combining mouse and keyboard.",
+"Troubleshoot flaky hover or drag-and-drop tests in real-world projects."
+        ]
+      },
+  "Frames / iFrames Handling": {
+    "exercise": [
+      "Open a web page containing iframe.",
+      "Switch to iframe using driver.switchTo().frame(index).",
+      "Switch to iframe using driver.switchTo().frame(nameOrId).",
+      "Switch to iframe using driver.switchTo().frame(WebElement).",
+      "Interact with elements inside iframe (click, sendKeys, getText).",
+      "Switch back to main page using driver.switchTo().defaultContent().",
+      "Switch to parent frame using driver.switchTo().parentFrame().",
+      "Handle multiple nested iframes.",
+      "Verify elements inside iframe after switching.",
+      "Automate form submission inside iframe.",
+      "Handle dynamically loaded iframe content.",
+      "Combine iframe switching with waits for stability.",
+      "Implement reusable methods for iframe handling.",
+      "Handle exceptions like NoSuchFrameException.",
+      "Validate actions performed inside iframe reflect correctly on main page."
+    ],
+    "basic": [
+      "What is an iframe?",
+      "Difference between frame and iframe.",
+      "How to switch to iframe by index?",
+      "How to switch to iframe by name or ID?",
+      "How to switch to iframe by WebElement?",
+      "How to switch back to main page?",
+      "Difference between defaultContent() and parentFrame().",
+      "Can you interact with elements inside iframe without switching?",
+      "How to handle nested iframes?",
+      "How to handle exceptions while switching frames?"
+    ],
+    "medium": [
+      "Switch to iframe and fill a form inside it.",
+      "Handle multiple nested iframes and interact with elements.",
+      "Switch back and forth between parent and child frames.",
+      "Combine iframe switching with explicit wait for elements.",
+      "Handle dynamically loaded iframe content.",
+      "Validate iframe content after interaction.",
+      "Automate iframe interaction in a multi-step workflow.",
+      "Implement reusable utility method for iframe switching.",
+      "Handle exceptions like NoSuchFrameException or StaleElementReferenceException.",
+      "Switch between multiple iframes on the same page efficiently."
+    ],
+    "advanced": [
+      "Real-world scenario: automate a payment gateway embedded inside iframe.",
+      "Handle nested iframes for third-party content (ads, forms, widgets).",
+      "Integrate iframe switching with Actions class interactions.",
+      "Automate dynamic forms inside iframe for registration workflows.",
+      "Handle iframe in multi-browser testing.",
+      "Optimize scripts to avoid repeated iframe switches.",
+      "Create reusable iframe handling utility for framework use.",
+      "Handle iframe in Selenium Grid parallel execution.",
+      "Troubleshoot flaky tests caused by dynamic iframe loading.",
+      "Automate end-to-end workflow involving multiple iframes and dynamic content updates."
+    ]
+  },
+
+  "Alerts / Pop-ups Handling": {
+    "exercise": [
+      "Open a webpage with JavaScript alert.",
+      "Switch to alert using driver.switchTo().alert().",
+      "Accept alert using accept().",
+      "Dismiss alert using dismiss().",
+      "Retrieve alert text using getText().",
+      "Send text to prompt alert using sendKeys().",
+      "Handle confirm alerts and validate response.",
+      "Handle prompt alerts and submit input.",
+      "Combine alert handling with waits for dynamic pop-ups.",
+      "Automate workflow requiring multiple alerts in sequence.",
+      "Implement reusable alert handling utility.",
+      "Handle alerts appearing after AJAX or delayed actions.",
+      "Validate expected alert text before accepting.",
+      "Handle unexpected alerts gracefully.",
+      "Integrate alert handling into real-time form submission workflow."
+    ],
+    "basic": [
+      "What is an alert in Selenium?",
+      "Difference between alert, confirm, and prompt.",
+      "How to switch to alert?",
+      "How to accept an alert?",
+      "How to dismiss an alert?",
+      "How to retrieve alert text?",
+      "How to send text to prompt alert?",
+      "Difference between dismiss() and accept().",
+      "Can alerts be handled without switching?",
+      "How to handle unexpected alerts?"
+    ],
+    "medium": [
+      "Handle confirm alert and verify action taken on accept/dismiss.",
+      "Handle prompt alert, enter text, and verify input.",
+      "Validate alert text before accepting.",
+      "Handle multiple alerts appearing in sequence.",
+      "Combine alert handling with explicit wait.",
+      "Automate login alert pop-ups.",
+      "Handle alert after form submission dynamically.",
+      "Implement reusable alert utility method.",
+      "Handle stale or missing alert exceptions.",
+      "Verify browser behavior after alert handling."
+    ],
+    "advanced": [
+      "Real-world scenario: automate e-commerce order confirmation pop-ups.",
+      "Handle AJAX-generated alerts dynamically.",
+      "Integrate alert handling in parallel execution scripts.",
+      "Combine alert handling with Actions class interactions.",
+      "Automate workflow with multiple prompt and confirm alerts.",
+      "Optimize alert handling to prevent test flakiness.",
+      "Create reusable alert handling methods for framework integration.",
+      "Automate complex multi-step workflow with dynamic alerts.",
+      "Troubleshoot flaky tests caused by unexpected pop-ups.",
+      "Handle end-to-end workflow including alerts, navigation, and validations in real-world project scenarios."
+    ]
+  },
+
+  "Windows / Tabs Handling": {
+    "exercise": [
+      "Open a webpage that opens a new window/tab on button click.",
+      "Get all window handles using driver.getWindowHandles().",
+      "Switch to a specific window using driver.switchTo().window(handle).",
+      "Perform actions on elements in the new window.",
+      "Close the new window and switch back to parent window.",
+      "Validate page title or URL after switching.",
+      "Handle multiple windows dynamically.",
+      "Implement reusable method for switching windows.",
+      "Handle pop-ups opening in new tabs.",
+      "Combine window handling with waits for dynamic content.",
+      "Automate login workflow with multiple windows (e.g., OAuth login).",
+      "Handle nested pop-ups across windows.",
+      "Validate actions performed in child window reflect on main window.",
+      "Handle exceptions like NoSuchWindowException.",
+      "Integrate window handling into multi-step real-world workflows."
+    ],
+    "basic": [
+      "How to switch between windows in Selenium?",
+      "Difference between getWindowHandle and getWindowHandles.",
+      "How to close current window?",
+      "How to switch back to parent window?",
+      "What happens if window handle is incorrect?",
+      "How to handle multiple windows?",
+      "How to validate window title or URL?",
+      "Can you switch to a window without handle?",
+      "Difference between tab and window handling.",
+      "How to handle exceptions in window switching?"
+    ],
+    "medium": [
+      "Open multiple windows and interact with elements in each.",
+      "Switch to new window and perform form submission.",
+      "Validate content in child window before closing.",
+      "Automate multi-step workflow across multiple tabs.",
+      "Implement reusable utility for switching windows dynamically.",
+      "Handle pop-ups opening in new tabs with AJAX.",
+      "Switch between parent and child windows multiple times.",
+      "Validate actions in child window reflected in parent.",
+      "Handle exceptions when child window closes unexpectedly.",
+      "Automate login via OAuth with multiple window handling."
+    ],
+    "advanced": [
+      "Real-world scenario: automate OAuth login (Google/Facebook) opening in new window.",
+      "Automate e-commerce workflow: product details in new window → add to cart → validate main page.",
+      "Handle multiple tabs dynamically in dashboard applications.",
+      "Integrate window handling with Actions class for complex workflows.",
+      "Optimize window switching to prevent flaky tests.",
+      "Reusable window handling utility for large-scale projects.",
+      "Combine window handling with explicit wait and alert handling.",
+      "Automate multi-step form submission across multiple tabs.",
+      "Troubleshoot flaky tests caused by multiple windows/tabs.",
+      "End-to-end automation involving multiple windows, pop-ups, and validations."
+    ]
+  },
+
+  "Synchronization Techniques": {
+    "exercise": [
+      "Open a webpage with elements loading dynamically.",
+      "Use Thread.sleep(5000) to wait for elements.",
+      "Replace Thread.sleep() with implicit wait.",
+      "Replace with explicit wait (WebDriverWait + ExpectedConditions).",
+      "Replace with FluentWait for dynamic content.",
+      "Measure execution time for Thread.sleep vs Waits.",
+      "Automate a login form using Thread.sleep, then optimize using waits.",
+      "Handle delayed AJAX elements using waits.",
+      "Combine waits with Actions class and frames.",
+      "Implement reusable utility for synchronization using waits.",
+      "Compare flaky test behavior with Thread.sleep vs proper waits.",
+      "Validate elements appear/disappear as expected.",
+      "Automate multi-step workflow with mixed waits.",
+      "Handle stale elements appearing after delay.",
+      "Optimize synchronization to reduce total execution time."
+    ],
+    "basic": [
+      "What is synchronization in Selenium?",
+      "Difference between Thread.sleep() and waits.",
+      "What are implicit, explicit, and fluent waits?",
+      "Why is Thread.sleep() not recommended?",
+      "How to use implicit wait?",
+      "How to use explicit wait?",
+      "How to use FluentWait?",
+      "What exceptions can waits handle?",
+      "Difference between presenceOfElement and visibilityOfElement.",
+      "How to optimize synchronization in Selenium scripts?"
+    ],
+    "medium": [
+      "Automate login page with Thread.sleep and observe issues.",
+      "Replace Thread.sleep with implicit wait and verify improvement.",
+      "Replace implicit wait with explicit wait for delayed elements.",
+      "Use FluentWait for AJAX-loaded elements.",
+      "Compare execution times and stability.",
+      "Combine waits with frame switching.",
+      "Handle stale element exceptions using waits.",
+      "Automate multi-step workflow with multiple waits.",
+      "Optimize waits to avoid unnecessary delays.",
+      "Implement reusable synchronization utility in framework."
+    ],
+    "advanced": [
+      "Real-world scenario: automate e-commerce checkout with delayed pop-ups, dynamic tables, and AJAX-loaded elements.",
+      "Replace all Thread.sleep() calls with proper waits in existing test suite.",
+      "Combine explicit wait, fluent wait, and Actions class in a single workflow.",
+      "Optimize waits for CI/CD execution to reduce build time.",
+      "Handle flaky tests caused by timing issues.",
+      "Implement project-wide synchronization best practices.",
+      "Automate dashboard with dynamic charts and tables using waits.",
+      "Integrate waits in parallel execution scripts.",
+      "Troubleshoot flaky tests caused by improper synchronization.",
+      "Real-world end-to-end scenario: login → form submission → validation → dynamic pop-ups → reporting with optimized waits."
+    ]
+      },
+
+      "Selenium 4 Architecture":{
+        exercise:[
+          "Draw architecture diagram showing Client → W3C → Browser Driver → Browser.",
+          "Launch any browser & trace internal flow using logs."
+        ],
+        basic:[
+          "What is Selenium 4?",
+          "What is W3C WebDriver Protocol?",
+          "Difference b/w JSON Wire and W3C Protocol?",
+          "What are core Selenium components?",
+          "How does Selenium communicate with browser?"
+        ],
+        medium:[
+          "How does Selenium 4 remove conversion layer?",
+          "How does W3C improve cross-browser support?",
+          "Which drivers are fully W3C compliant?",
+          "What happens internally when driver.get() executes?",
+          "Draw & explain request–response cycle."
+        ],
+        advanced:[
+          "Explain Selenium 4 architecture in detail with diagram.",
+          "Why is direct protocol faster?",
+          "How does Selenium 4 manage sessions?",
+          "What are stability benefits of W3C protocol?",
+          "Compare Selenium 3 vs 4 internals."
+        ]
+      },
+
+      "Relative Locators":{
+        exercise:[
+          "Automate a login form using RelativeLocator.with() to locate “Password” below “Username”.",
+          "Use toLeftOf(), below(), near()."
+        ],
+        basic:[
+          "What are Relative Locators?",
+          "List all 5 types.",
+          "Which class provides them?",
+          "Give syntax example.",
+          "Are they new to Selenium 4?"
+        ],
+        medium:[
+          "How to combine multiple conditions?",
+          "Can they replace XPath?",
+          "Difference between below() and near()?",
+          "Can Relative Locators identify hidden elements?",
+          "How does Selenium detect element position?"
+        ],
+        advanced:[
+          "How Relative Locators work internally (DOM geometry)?",
+          "Limitations of Relative Locators?",
+          "Can they be chained with ExpectedConditions?",
+          "Use-case where Relative Locator improves reliability.",
+          "Cross-browser behavior of Relative Locators."
+        ]
+      },
+
+      "New Window / Tab Handling":{
+        exercise:[
+          "Open main page → open new tab with driver.switchTo().newWindow(WindowType.TAB) → navigate → switch back."
+        ],
+        basic:[
+          "What’s new in Selenium 4 for window handling?",
+          "What is WindowType.TAB?",
+          "Syntax for opening new tab?",
+          "How to get window handles?",
+          "Difference b/w tab & window?"
+        ],
+        medium:[
+          "How to switch between parent & child windows?",
+          "How to verify new tab opened?",
+          "How to close specific window?",
+          "How many tabs can Selenium handle?",
+          "How to return to main window?"
+        ],
+        advanced:[
+          "How to manage multiple dynamic tabs?",
+          "How to share session between tabs?",
+          "Handling pop-ups in new windows?",
+          "Write code for multi-tab workflow (e.g., payment).",
+          "Parallel window handling challenges."
+        ]
+      },
+
+      "WebElement Screenshot Feature":{
+        exercise:[
+          "Capture element-level screenshot of logo/button using getScreenshotAs(OutputType.FILE).",
+          "Save to custom path."
+        ],
+        basic:[
+          "How to take screenshot of element?",
+          "Which method is used?",
+          "Which interface provides it?",
+          "Return type of getScreenshotAs()?",
+          "OutputType options?"
+        ],
+        medium:[
+          "How to save file to specific folder?",
+          "Can we capture hidden elements?",
+          "Difference between page and element screenshot?",
+          "How to attach screenshot to reports?",
+          "What exception is thrown on failure?"
+        ],
+        advanced:[
+          "How Selenium captures pixels internally?",
+          "How to compare screenshots (visually)?",
+          "Capture screenshots on test failure automatically.",
+          "Can we capture multiple elements together?",
+          "Browser limitations for this feature."
+        ]
+      },
+
+      "Chrome DevTools Protocol":{
+        exercise:[
+          "Create DevTools session using driver.getDevTools().",
+          "Capture network requests & console logs.",
+          "Simulate slow network."
+        ],
+        basic:[
+          "What is CDP?",
+          "Why was it introduced?",
+          "Which method creates session?",
+          "How to capture network logs?",
+          "What is Network.enable() used for?"
+        ],
+        medium:[
+          "How to simulate mobile view using CDP?",
+          "How to block URLs?",
+          "How to capture console errors?",
+          "How to set network speed to slow 3G?",
+          "Difference b/w CDP and WebDriver API?"
+        ],
+        advanced:[
+          "How to mock geo-location using CDP?",
+          "How to intercept HTTP calls and verify status codes?",
+          "Which browsers support CDP integration?",
+          "How to capture performance metrics?",
+          "Real-time use cases of CDP in automation."
+        ]
+      },
+
+      "Selenium Grid 4 (New Design & UI)":{
+        exercise:[
+          "Start Grid 4 standalone mode → Run tests on Chrome & Firefox in parallel.",
+          "Explore Grid UI."
+        ],
+        basic:[
+          "What is Selenium Grid 4?",
+          "Difference b/w Grid 3 and Grid 4?",
+          "Components of Grid 4?",
+          "Command to start Grid 4 standalone?",
+          "Default Grid UI URL?"
+        ],
+        medium:[
+          "What is Router in Grid 4?",
+          "What does Distributor do?",
+          "Role of Session Map and Node?",
+          "How to execute parallel tests in Grid 4?",
+          "How to register nodes in distributed mode?"
+        ],
+        advanced:[
+          "Explain Grid 4 distributed architecture.",
+          "How Grid 4 supports Docker/Kubernetes?",
+          "How to monitor sessions in Grid UI?",
+          "How to scale Grid 4 for multiple projects?",
+          "Benefits of Grid 4 in CI/CD pipeline."
+        ]
+      },
+
+      "Enhanced Actions API":{
+        exercise:[
+          "Perform hover → double-click → sendKeys sequence using Actions.",
+          "Test drag-and-drop precision."
+        ],
+        basic:[
+          "What is Actions class?",
+          "How does Selenium 4 improve it?",
+          "What is pointer input?",
+          "How to perform hover action?",
+          "How to perform drag-drop?"
+        ],
+        medium:[
+          "How to simulate keyboard inputs?",
+          "How to chain multiple actions?",
+          "Difference b/w build() and perform()?",
+          "How to handle context-click?",
+          "Can Actions work across frames?"
+        ],
+        advanced:[
+          "How does Actions API handle multi-device inputs?",
+          "How to implement touch gestures?",
+          "Difference between Actions and Robot class?",
+          "Advanced gesture automation use-case.",
+          "Synchronization issues with Actions API."
+        ]
+      },
+
+      "Deprecation of DesiredCapabilities → Options Classes":{
+        exercise:[
+          "Create tests using ChromeOptions, FirefoxOptions.",
+          "Run headless and incognito modes."
+        ],
+        basic:[
+          "What replaced DesiredCapabilities?",
+          "Why deprecated?",
+          "List browser-specific Options classes.",
+          "How to run Chrome headless?",
+          "Syntax for adding arguments?"
+        ],
+        medium:[
+          "How to merge Options with capabilities?",
+          "How to set proxy using Options?",
+          "Difference b/w setCapability() & addArguments()?",
+          "How to add experimental options?",
+          "How to set binary path for browser?"
+        ],
+        advanced:[
+          "Explain how Selenium 4 handles W3C capabilities internally.",
+          "How Options classes simplify remote execution?",
+          "Integration of Options with Grid 4.",
+          "Common mistakes while using Options.",
+          "How to customize browser profile using Options?"
+        ]
+      },
+
+      "Developer-Friendly API Improvements":{
+        exercise:[
+          "Compare Selenium 3 vs 4 syntax for timeouts, logs, window handling.",
+          "Use manage().logs() to fetch browser logs."
+        ],
+        basic:[
+          "What API improvements came in Selenium 4?",
+          "What new timeout methods exist?",
+          "What is getRect()?",
+          "How to capture browser logs?",
+          "What methods were deprecated?"
+        ],
+        medium:[
+          "How has exception handling changed?",
+          "How to set timeouts using Duration object?",
+          "How findElements() improved?",
+          "How to use timeouts for script execution?",
+          "Difference b/w implicit and page-load timeouts?"
+        ],
+        advanced:[
+          "How API changes increase readability and stability?",
+          "How to set custom permissions via API?",
+          "How to use logs for debugging failures?",
+          "Backward-compatibility support in Selenium 4?",
+          "Describe real-time benefits of new API design."
+        ]
+      },
+
+      "Selenium Grid 4 – Distributed Mode with Docker":{
+        exercise:[
+          "Install Docker Desktop.",
+"Pull Selenium Grid 4 images: selenium/hub, selenium/node-chrome, selenium/node-firefox.",
+"Create a docker-compose.yml file for Hub + multiple Nodes.",
+"Start containers using docker-compose up -d.",
+"Open Grid UI at http://localhost:4444/ui.",
+"Execute your test remotely using RemoteWebDriver.",
+"Observe sessions in UI.",
+"Stop grid with docker-compose down.",
+"Extend setup with video recording (selenium/video) (optional)."
+        ],
+        basic:[
+          "What is Selenium Grid?",
+"What are main benefits of Selenium Grid 4?",
+"What is Docker and why used in Grid?",
+"What is distributed mode in Grid 4?",
+"What is a Selenium Hub?",
+"What is a Selenium Node?",
+"How does Grid 4 differ from Grid 3?",
+"What are the 4 key components of Grid 4 architecture?",
+"How to access Grid UI?",
+"What command starts Grid 4 using Docker Compose?"
+        ],
+        medium:[
+          "How to configure multiple browsers using Docker Compose?",
+"How do Hub and Nodes communicate?",
+"What ports are used by Selenium Grid 4 components?",
+"What is the purpose of the Router and Distributor?",
+"How to check running containers using Docker commands?",
+"How to run parallel tests on multiple nodes?",
+"How to connect your local IDE tests to remote Grid?",
+"What are the advantages of using Docker instead of manual setup?",
+"What happens when a Node fails mid-execution?",
+"How to scale Nodes up or down in Docker Compose?"
+        ],
+        advanced:[
+          "Explain complete distributed architecture workflow in Selenium Grid 4 with Docker.",
+"How does Selenium Grid 4 achieve load balancing?",
+"How does Session Map work internally?",
+"How do you persist logs or video recordings across container restarts?",
+"How can Grid 4 be integrated with Jenkins CI/CD pipeline?",
+"How can you run Grid 4 on Kubernetes for enterprise testing?",
+"How to run Chrome & Firefox containers in parallel across machines?",
+"How does Docker Compose help maintain consistency across environments?",
+"How to handle environment variables and browser versions dynamically?",
+"What are best practices for maintaining Selenium Grid 4 Docker setup?"
+        ]
+      }
+    };
+
+  const descriptions = {
+  "Selenium Overview & Architecture": "Selenium is an open-source tool used to automate web applications. It allows testers to write scripts in languages like Java or Python to automate actions on browsers — such as clicking buttons, entering text, or checking results. It consists of components like Selenium IDE, WebDriver, and Grid that work together to automate browsers and execute tests across different environments.",
+
+  "Setup: Maven, Eclipse/IntelliJ, ChromeDriver, GeckoDriver": "Setup involves configuring your development environment to run Selenium tests efficiently. This includes installing Maven for dependency management, setting up IDEs like Eclipse or IntelliJ, and downloading browser drivers such as ChromeDriver and GeckoDriver for Chrome and Firefox automation.",
+
+  "WebDriver Interface & Browser Launch": "WebDriver is the core interface in Selenium that allows direct interaction with browsers. It provides methods to launch, control, and close browsers, enabling test scripts to perform actions like opening URLs and simulating user interactions programmatically.",
+
+  "Locators": "Locators are used to identify elements on a web page for automation. Selenium provides multiple locator strategies such as ID, Name, ClassName, TagName, LinkText, PartialLinkText, CSS Selector, and XPath to find and interact with web elements precisely.",
+
+  "Basic WebElement Interactions": "WebElement interactions allow automation scripts to mimic user behavior. Using commands like click(), sendKeys(), getText(), and getAttribute(), Selenium can perform actions such as entering input, clicking buttons, reading text, and retrieving element properties.",
+
+  "Browser Navigation": "Selenium’s navigation commands simulate browser navigation actions. Using methods like navigate().to(), back(), forward(), and refresh(), you can move between pages, reload content, and test browser history behavior programmatically.",
+
+  "Handling Checkboxes, Radio Buttons, Drop-downs": "Selenium can handle form elements like checkboxes, radio buttons, and dropdowns. The Select class provides convenient methods like selectByVisibleText(), selectByValue(), and selectByIndex() to manage dropdown selections in web automation.",
+
+  "Wait Strategies": "Wait strategies help synchronize Selenium tests with web page loading times. Implicit, Explicit, and Fluent Waits ensure that test scripts wait for elements to appear before performing actions, reducing flakiness and improving test reliability.",
+
+  "Implicit Wait": "Implicit Wait instructs WebDriver to poll the DOM for a specified duration while searching for elements. If the element is not found immediately, it retries until the timeout expires, helping to manage dynamic loading delays.",
+
+  "Explicit Wait": "Explicit Wait allows Selenium to wait for specific conditions — such as element visibility, clickability, or text presence — before proceeding. It’s implemented using WebDriverWait and ExpectedConditions classes for better control.",
+
+  "Fluent Wait": "Fluent Wait extends Explicit Wait by defining polling intervals and ignoring specific exceptions. It’s ideal for handling dynamically changing elements that may take varying times to appear on the page.",
+
+  "ExpectedConditions": "ExpectedConditions provide pre-built conditions for Explicit Waits, such as elementToBeClickable(), visibilityOfElementLocated(), or alertIsPresent(). These help ensure web elements are ready before interaction.",
+
+  "Actions Class": "The Actions class in Selenium is used for advanced user interactions like mouse hover, drag-and-drop, double-click, and right-click. It simulates complex gestures that go beyond simple clicks and typing actions.",
+
+  "Frames / iFrames Handling": "Frames and iFrames are embedded documents within web pages. Selenium can switch between them using switchTo().frame() and return to the main page using switchTo().defaultContent(). This is crucial for interacting with elements inside frames.",
+
+  "Alerts / Pop-ups Handling": "Selenium handles browser alerts and pop-ups using the Alert interface. You can accept(), dismiss(), read text using getText(), or enter input with sendKeys() to manage modal dialogs effectively.",
+
+  "Windows / Tabs Handling": "Selenium supports switching between multiple browser windows or tabs using switchTo().window(). It retrieves all open handles using getWindowHandles(), enabling testing of multi-window workflows.",
+
+  "Synchronization Techniques": "Synchronization ensures Selenium interacts with elements only when they’re ready. Thread.sleep() provides static waits, while Explicit and Fluent Waits offer dynamic waiting strategies that adapt to runtime conditions.",
+
+  "Selenium 4 Architecture": "Selenium 4 fully adopts the W3C WebDriver Protocol, improving communication between Selenium clients and browsers. This standardization ensures faster, more stable, and consistent cross-browser automation.",
+
+  "Relative Locators": "Relative Locators in Selenium 4 allow identifying elements based on their position relative to other elements — for example, above(), below(), near(), toLeftOf(), and toRightOf(). They simplify element identification in complex layouts.",
+
+  "New Window / Tab Handling": "Selenium 4 introduced direct support for opening new tabs or windows using driver.switchTo().newWindow(). This feature enables managing multi-tab workflows without using external browser commands.",
+
+  "WebElement Screenshot Feature": "Selenium 4 allows capturing screenshots of specific elements using WebElement.getScreenshotAs(). This helps in visual validation testing and debugging layout or rendering issues.",
+
+  "Chrome DevTools Protocol": "Selenium 4 integrates Chrome DevTools Protocol to provide low-level access to browser features like network requests, console logs, and performance metrics, enabling advanced debugging and testing scenarios.",
+
+  "Selenium Grid 4 (New Design & UI)": "Selenium Grid 4 introduces a redesigned architecture and an intuitive web-based UI. It supports distributed test execution across multiple machines, improving scalability and resource utilization.",
+
+  "Enhanced Actions API": "The enhanced Actions API in Selenium 4 allows precise control of mouse and keyboard inputs. It supports realistic user simulation with smooth gestures and high accuracy in automation tasks.",
+
+  "Deprecation of DesiredCapabilities → Options Classes": "Selenium 4 replaces DesiredCapabilities with browser-specific Options classes such as ChromeOptions, FirefoxOptions, and EdgeOptions, making configuration more streamlined and type-safe.",
+
+  "Developer-Friendly API Improvements": "Selenium 4 modernizes the API with cleaner syntax, better readability, and improved error messages. These updates make writing and maintaining Selenium scripts more intuitive.",
+
+  "Selenium Grid 4 – Distributed Mode with Docker": "Selenium Grid 4 supports containerized deployment using Docker. It allows testers to run distributed test environments efficiently by launching multiple browser nodes in isolated containers."
+  };
+
+
+const foundationList = [
+    "Selenium Overview & Architecture",
+    "Setup: Maven, Eclipse/IntelliJ, ChromeDriver, GeckoDriver",
+    "WebDriver Interface & Browser Launch",
+    "Locators",
+    "Basic WebElement Interactions",
+    "Browser Navigation",
+    "Handling Checkboxes, Radio Buttons, Drop-downs",
+    "Frames / iFrames Handling",
+    "Alerts / Pop-ups Handling",
+    "Windows / Tabs Handling",
+    "Synchronization Techniques"
+  ];
+
+  const coreList = [ "Actions Class",
+    "Selenium 4 Architecture",
+    "Relative Locators",
+    "New Window / Tab Handling",
+    "WebElement Screenshot Feature",
+    "Chrome DevTools Protocol"];
+  const waitStrategiesList = ["Implicit Wait", "Explicit Wait", "Fluent Wait", "ExpectedConditions"];
+  const frameworkList = ["Selenium Grid 4 (New Design & UI)",
+    "Selenium Grid 4 – Distributed Mode with Docker",
+    "Enhanced Actions API",
+    "Deprecation of DesiredCapabilities → Options Classes",
+    "Developer-Friendly API Improvements"];
+
+  function createListItem(text, cls = 'topicItem') {
+    const d = document.createElement('div');
+    d.className = cls;
+    d.textContent = text;
+    d.addEventListener('click', ev => {
+      ev.stopPropagation();
+      loadTopic(text);
+      document.querySelectorAll('.topicItem, .subtopicItem').forEach(i => i.classList.remove('active'));
+      d.classList.add('active');
+    });
+    return d;
+  }
+
+  function populate(container, list, cls = 'topicItem') {
+    container.innerHTML = '';
+    list.forEach(item => container.appendChild(createListItem(item, cls)));
+  }
+
+  const contFoundation = document.getElementById('content-foundation');
+  const contCore = document.getElementById('core-other');
+  const contFramework = document.getElementById('content-framework');
+  const contWaits = document.getElementById('content-waits');
+
+  populate(contFoundation, foundationList);
+  populate(contCore, coreList);
+  populate(contFramework, frameworkList);
+  populate(contWaits, waitStrategiesList, 'subtopicItem');
+
+ function toggleSection(id) {
+  const allSections = ['foundation', 'core', 'framework'];
+
+  allSections.forEach(sec => {
+    const c = document.getElementById('content-' + sec);
+    const caret = document.getElementById('caret-' + sec);
+    const title = document.querySelector('.section-title[data-section="' + sec + '"]');
+    if (sec !== id) {
+      c.style.display = 'none';
+      caret.classList.remove('open');
+      title.classList.remove('active');
+    }
+  });
+
+  const c = document.getElementById('content-' + id);
+  const caret = document.getElementById('caret-' + id);
+  const title = document.querySelector('.section-title[data-section="' + id + '"]');
+  const show = c.style.display === 'none' || c.style.display === '';
+
+  // toggle clicked one
+  c.style.display = show ? 'block' : 'none';
+  caret.classList.toggle('open', show);
+  title.classList.toggle('active', show);
+
+  // if ALL sections are closed, reset to default welcome view
+  const allClosed = allSections.every(sec => {
+    const el = document.getElementById('content-' + sec);
+    return el.style.display === 'none' || el.style.display === '';
+  });
+
+  if (allClosed) {
+    // remove any topic banner (topic-specific info)
+    const infoBanner = document.querySelector('.info-banner.topic');
+    if (infoBanner) infoBanner.remove();
+
+    // restore welcome banner + subtitle + hide tabs
+    document.getElementById('mainTitle').textContent =
+      "Learn Selenium Concepts Through Structured Q&A — From Fundamentals to Expert Level";
+    document.getElementById('defaultBanner').style.display = 'flex';
+    document.getElementById('subtitle').style.display = 'block';      // <-- show the missing line
+    document.getElementById('tabButtons').style.display = 'none';
+    document.getElementById('tabContent').style.display = 'none';
+  }
+}
+
+
+
+  function toggleSubgroup(id) {
+    const c = document.getElementById('content-' + id);
+    const caret = document.getElementById('caret-' + id);
+    const show = c.style.display === 'none' || c.style.display === '';
+    c.style.display = show ? 'flex' : 'none';
+    caret.classList.toggle('open', show);
+  }
+
+  document.querySelectorAll('.section-title').forEach(t => 
+    t.addEventListener('click', () => toggleSection(t.dataset.section))
+  );
+  
+  document.querySelectorAll('.subgroup-title').forEach(t => 
+    t.addEventListener('click', () => toggleSubgroup(t.dataset.subgroup))
+  );
+
+  let currentTopic = null;
+
+  function loadTopic(name) {
+  const fullName = loadTopic[name] || name; //  map short to full key
+  currentTopic = fullName;    
+    document.getElementById('mainTitle').textContent = name;
+    document.getElementById('defaultBanner').style.display = 'none';
+    document.getElementById('subtitle').style.display = 'none';
+    document.getElementById('tabButtons').style.display = 'flex';
+    document.getElementById('tabContent').style.display = 'block';
+
+    const desc = descriptions[fullName] || 'Overview: ' + fullName;
+    let info = document.querySelector('.info-banner.topic');
+    if (!info) {
+      info = document.createElement('div');
+      info.className = 'info-banner topic';
+      document.getElementById('tabButtons').before(info);
+    }
+info.innerHTML = `<div style="margin-top:5px;color:#324b4b">${desc}</div>`;
+
+    showTab('exercise');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tab-btn[data-tab="exercise"]').classList.add('active');
+  }
+
+  window.showTab = function(tabName, btn) {
+    if (btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    const container = document.getElementById('tabContent');
+    container.innerHTML = '';
+    if (!currentTopic || !topics[currentTopic]) {
+      container.innerHTML = '<p>Select a topic to view questions.</p>';
+      return;
+    }
+
+    const list = topics[currentTopic][tabName] || [];
+    const title = tabName.charAt(0).toUpperCase() + tabName.slice(1);
+    const h = document.createElement('h3');
+    h.textContent = title + ' Questions';
+    container.appendChild(h);
+
+    if (list.length === 0) {
+      const p = document.createElement('p');
+      p.textContent = 'No questions for this category.';
+      container.appendChild(p);
+      return;
+    }
+
+    const ul = document.createElement('ul');
+    list.forEach(q => {
+      const li = document.createElement('li');
+      li.textContent = q;
+      ul.appendChild(li);
+    });
+    container.appendChild(ul);
+  };
+
+});
+/* ---------- UNIVERSAL SEARCH (All Sections + Wait Strategies + No Clear Button) ---------- */
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("searchBar");
+
+  // create "No results found" message under the search bar
+  const noResultsMsg = document.createElement("div");
+  noResultsMsg.textContent = "No results found";
+  noResultsMsg.style.color = "#ffb3b3";
+  noResultsMsg.style.fontSize = "13px";
+  noResultsMsg.style.fontWeight = "600";
+  noResultsMsg.style.marginTop = "8px";
+  noResultsMsg.style.textAlign = "center";
+  noResultsMsg.style.display = "none";
+  searchInput.insertAdjacentElement("afterend", noResultsMsg);
+
+  searchInput.addEventListener("input", () => {
+    const filter = searchInput.value.toLowerCase().trim();
+    const allTopics = document.querySelectorAll(".topicItem, .subtopicItem");
+    let found = false;
+
+    if (filter === "") {
+      // Reset everything when the field is cleared
+      allTopics.forEach(t => (t.style.display = "block"));
+      document.querySelectorAll(".section-content, .subgroup-content").forEach(sec => (sec.style.display = "none"));
+      noResultsMsg.style.display = "none";
+      return;
+    }
+
+    // Filter topics by text
+    allTopics.forEach(topic => {
+      const match = topic.textContent.toLowerCase().includes(filter);
+      topic.style.display = match ? "block" : "none";
+
+      if (match) {
+        found = true;
+
+        // Expand parent subgroup (like Wait Strategies)
+        const subgroup = topic.closest(".subgroup-content");
+        if (subgroup) subgroup.style.display = "block";
+
+        // Expand main section
+        const section = topic.closest(".section-content");
+        if (section) section.style.display = "block";
+
+        // Specifically expand Core section if inside it
+        if (topic.closest("#core-other") || topic.closest("#content-waits")) {
+          document.getElementById("content-core").style.display = "block";
+          document.getElementById("caret-core").classList.add("open");
+          document.querySelector('.section-title[data-section="core"]').classList.add("active");
+        }
+      }
+    });
+
+    // Hide empty sections
+    document.querySelectorAll(".section-content, .subgroup-content").forEach(section => {
+      const visible = Array.from(section.children).some(c => c.style.display === "block");
+      section.style.display = visible ? "block" : "none";
+    });
+
+    // Update Core section visibility
+    const coreHasVisible = Array.from(document.querySelectorAll("#content-core .topicItem, #content-waits .subtopicItem"))
+      .some(el => el.style.display === "block");
+    document.getElementById("content-core").style.display = coreHasVisible ? "block" : "none";
+    document.getElementById("caret-core").classList.toggle("open", coreHasVisible);
+    document.querySelector('.section-title[data-section="core"]').classList.toggle("active", coreHasVisible);
+
+    // Show or hide "No results found"
+    noResultsMsg.style.display = found ? "none" : "block";
+  });
+});
+
+
+</script>
+<div class="footer-copy">© 2025 Selenium Q&A Hub | Designed, Developed & Tested by Alekhya Bandu
+</div>
+
+</body>
+</html>
